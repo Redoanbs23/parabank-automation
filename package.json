@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Redoanbs23/parabank-automation.git"
@@ -17,7 +19,6 @@
   },
   "homepage": "https://github.com/Redoanbs23/parabank-automation#readme",
   "devDependencies": {
-    "@playwright/test": "^1.61.1",
-    "@types/node": "^26.1.1"
+    "@playwright/test": "^1.61.1"
   }
 }
