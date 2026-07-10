@@ -1,3 +1,5 @@
+//Verify that a user can log in successfully with a valid username and password
+
 class LoginPage {
   constructor(page) {
     this.page = page;
@@ -5,6 +7,7 @@ class LoginPage {
     this.passwordInput = page.locator('input[name="password"]');
     this.loginButton = page.getByRole('button',{ name: 'Log In' });
     this.logoutLink=page.getByRole('link', { name: 'Log Out' });
+    this.errorMessage = page.locator('.error');
   
   }
 
@@ -24,3 +27,6 @@ class LoginPage {
 }
 
 module.exports = { LoginPage };
+
+
+
