@@ -39,3 +39,26 @@ test('Register a new user, then logout and login with same credentials', async (
   await expect(page.getByRole('heading', { name: 'Accounts Overview' })).toBeVisible();
 });
 
+
+test('Verify that a generic error is shown for an invalid username', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+
+  await loginPage.goto();
+  await page.waitForTimeout(2000);
+
+  
+  const invalidUsername = 'invalidUser123';
+
+
+  const uniqueId = Date.now();
+  const dynamicPassword = `Pass${uniqueId}`;
+
+  await loginPage.login(invalidUsername, dynamicPassword);
+  await page.waitForTimeout(5000);
+
+  
+  await expect(loginPage.errorMessage).toBeVisible();
+
+  
+  await expect(page).toHaveURL('https://parabank.parasoft.com/parabank/login.htm');
+});
