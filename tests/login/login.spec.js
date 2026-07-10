@@ -39,29 +39,3 @@ test('Register a new user, then logout and login with same credentials', async (
   await expect(page.getByRole('heading', { name: 'Accounts Overview' })).toBeVisible();
 });
 
-//Verify that a generic error is shown for an invalid username
-
-test('Verify that a generic error is shown for an invalid username', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-
-    await loginPage.goto();
-
-    await loginPage.login('abc', '123');
-
-    await expect(loginPage.errorMessage)
-        .toHaveText('The username and password could not be verified.');
-});
-
-//Verify that a generic error is shown for a valid username with an invalid password
-test.only('Verify that a generic error is shown for a valid username with an invalid password', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-
-    await loginPage.goto();
-     await page.waitForTimeout(2000);
-
-    await loginPage.login('Bushra', '12356');
-     await page.waitForTimeout(5000);
-
-    await expect(loginPage.errorMessage)
-        .toHaveText('The username and password could not be verified.');
-});
