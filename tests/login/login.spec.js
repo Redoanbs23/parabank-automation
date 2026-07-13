@@ -44,7 +44,7 @@ test.describe('Login scenarios after fresh registration', () => {
     await expect(page.getByRole('heading', { name: 'Accounts Overview' })).toBeVisible();
   });
 
-  // Verify that a generic error is shown for an invalid username
+  // Verify with invalid username and valid password
 test('Invalid username and valid password - should show error', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
