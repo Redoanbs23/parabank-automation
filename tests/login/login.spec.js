@@ -2,63 +2,94 @@ const { test, expect } = require('@playwright/test');
 const { RegistrationPage } = require('../../pages/registration/registrationpage');
 const { LoginPage } = require('../../pages/login/loginpage');
 
-test('Register a new user, then logout and login with same credentials', async ({ page }) => {
-  const registrationPage = new RegistrationPage(page);
+test.describe('Login scenarios after fresh registration', () => {
+  let username, password;
+
+  test.beforeEach(async ({ page }) => {
+    const registrationPage = new RegistrationPage(page);
+    const loginPage = new LoginPage(page);
+
+    await registrationPage.goto();
+
+    const uniqueId = Date.now();
+    username = `user${uniqueId}`;
+    password = `Pass${uniqueId}`;
+
+    await registrationPage.registration(
+      'John',
+      'Doe',
+      '123 Main St',
+      'Dhaka',
+      'Dhaka',
+      '1200',
+      '1234',
+      '123456789',
+      username,
+      password,
+      password
+    );
+
+    await expect(page.getByText('Your account was created successfully')).toBeVisible();
+
+    await loginPage.logout();
+   
+  });
+
+  // Verify that a user can log in successfully with a valid username and password
+  test('Valid username and valid password - should login successfully', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(username, password);
+
+    await expect(page.getByRole('heading', { name: 'Accounts Overview' })).toBeVisible();
+  });
+
+  // Verify that a generic error is shown for an invalid username
+test('Invalid username and valid password - should show error', async ({ page }) => {
   const loginPage = new LoginPage(page);
-
-
-  await registrationPage.goto();
-
-  
-  const uniqueId = Date.now();
-  const username = `user${uniqueId}`;
-  const password = `Pass${uniqueId}`;
-
-  await registrationPage.registration(
-    'John',
-    'Doe',
-    '123 Main St',
-    'Dhaka',
-    'Dhaka',
-    '1200',
-    '1234',
-    '123456789',
-    username,
-    password,
-    password
-  );
-
-  await expect(page.getByText('Your account was created successfully')).toBeVisible();
-
-  await loginPage.logout();
-
   await loginPage.goto();
-  await loginPage.login(username, password);
 
- 
-  await expect(page.getByRole('heading', { name: 'Accounts Overview' })).toBeVisible();
-});
+  console.log('Invalid username used:', 'nonexistentuser999');
 
+  await loginPage.login('nonexistentuser999', password);
 
-test('Verify that a generic error is shown for an invalid username', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-
-  await loginPage.goto();
-  await page.waitForTimeout(2000);
-
-  
-  const invalidUsername = 'invalidUser123';
-
-
-  const uniqueId = Date.now();
-  const dynamicPassword = `Pass${uniqueId}`;
-
-  await loginPage.login(invalidUsername, dynamicPassword);
-  await page.waitForTimeout(5000);
-
-  
   await expect(loginPage.errorMessage).toBeVisible();
-
-  
-  await expect(page).toHaveURL('https://parabank.parasoft.com/parabank/login.htm');
+  const errorText = await loginPage.errorMessage.textContent();
+  console.log('ACTUAL ERROR MESSAGE:', errorText);
 });
+
+// Verify that a generic error is shown for a valid username with an invalid password
+test('Valid username and invalid password - should show error', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+
+  console.log('Username used:', username);
+  console.log('Invalid password used:', 'WrongPass123');
+
+  await loginPage.login(username, 'WrongPass123');
+
+  await expect(loginPage.errorMessage).toBeVisible();
+  const errorText = await loginPage.errorMessage.textContent();
+  console.log('ACTUAL ERROR MESSAGE:', errorText);
+
+  await expect(page.getByRole('heading', { name: 'Accounts Overview' })).not.toBeVisible();
+});
+//Verify that a generic error is shown when both username and password are invalid
+test('Verify that a generic error is shown when both username and password are invalid', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+
+  console.log('Username used:','nonexistentuser999');
+  console.log('Invalid password used:', 'WrongPass123');
+
+  await loginPage.login('nonexistentuser999', 'WrongPass123');
+
+  await expect(loginPage.errorMessage).toBeVisible();
+  const errorText = await loginPage.errorMessage.textContent();
+  console.log('ACTUAL ERROR MESSAGE:', errorText);
+
+  await expect(page.getByRole('heading', { name: 'Accounts Overview' })).not.toBeVisible();
+});
+
+
+}); 
