@@ -1,0 +1,14 @@
+{
+  "validUser": {
+    "firstName": "Shovon",
+    "lastName": "Rahman",
+    "address": "Dhaka",
+    "city": "Dhaka",
+    "state": "Dhaka",
+    "zipCode": "1212",
+    "phone": "01712345678",
+    "ssn": "123456789",
+    "username": "shovon12345",
+    "password": "123456@Aa"
+  }
+}
