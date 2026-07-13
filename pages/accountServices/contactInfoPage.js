@@ -15,6 +15,9 @@ export class ContactInfoPage {
     this.phoneField = this.page.locator('input[id="customer.phoneNumber"]');
     this.updateBtn = this.page.locator('input[value="Update Profile"]');
     this.successMessage = this.page.locator("#updateProfileResult h1");
+
+    this.firstNameError = this.page.locator('span[id="firstName-error"]');
+    this.addressError = this.page.locator('span[id="street-error"]');
   }
 
   async clickUpdateProfileLink() {

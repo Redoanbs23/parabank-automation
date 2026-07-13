@@ -22,4 +22,11 @@ export class OpenAccountsPage {
     await this.fundingAccountDropdown.selectOption({ index: fundingAccount });
     await this.openNewAccountButton.click();
   }
+
+  async getNewAccountId() {
+    await this.page.waitForFunction(
+      () => document.querySelector("#newAccountId")?.textContent?.trim() !== "",
+    );
+    return await this.newAccountID.textContent();
+  }
 }

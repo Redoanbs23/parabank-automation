@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "openAccount": "npx playwright test tests/accountServices/openAccount.spec.js"
+    "openAccount": "npx playwright test tests/accountServices/openAccount.spec.js",
+    "contactInfoPage": "npx playwright test tests/accountServices/contactInfoPage.spec.js"
   },
   "repository": {
     "type": "git",
