@@ -35,7 +35,7 @@ test.describe('Login scenarios after fresh registration', () => {
    
   });
 
-  // Verify that a user can log in successfully with a valid username and password
+  // Verify valid username and password
   test('Valid username and valid password - should login successfully', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
