@@ -74,7 +74,7 @@ test('Valid username and invalid password - should show error', async ({ page })
 
   await expect(page.getByRole('heading', { name: 'Accounts Overview' })).not.toBeVisible();
 });
-//Verify that a generic error is shown when both username and password are invalid
+//Verify with both username and password are invalid
 test('Verify that a generic error is shown when both username and password are invalid', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
