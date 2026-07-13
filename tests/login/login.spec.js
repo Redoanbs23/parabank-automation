@@ -58,7 +58,7 @@ test('Invalid username and valid password - should show error', async ({ page })
   console.log('ACTUAL ERROR MESSAGE:', errorText);
 });
 
-// Verify that a generic error is shown for a valid username with an invalid password
+// Verify with valid username and invalid password
 test('Valid username and invalid password - should show error', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
