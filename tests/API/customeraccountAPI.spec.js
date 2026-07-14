@@ -156,7 +156,7 @@ expect(response.status()).toBe(400);
 });
 
 
-test.only('Verify that GET account with a negative ID is handled gracefully', async ({ request }) => {
+test('Verify that GET account with a negative ID is handled gracefully', async ({ request }) => {
 
   const negativeAccountId = -100000;
 
@@ -183,6 +183,41 @@ test.only('Verify that GET account with a negative ID is handled gracefully', as
 
   
   expect(response.status()).toBe(400);
+});
+
+
+test.only('Verify that GET /accounts/{id}/transactions returns 200 with a valid transaction array for an account with history', async ({ request }) => {
+
+  const accountId = 13344; 
+
+  const response = await request.get(
+    `${base_url}/accounts/${accountId}/transactions`,
+    {
+      headers: {
+        'Accept': 'application/json'
+      }
+    }
+  );
+
+  console.log('Status Code:', response.status());
+
+  const responseBody = await response.json();
+  console.log('Response Body:', responseBody);
+
+  expect(response.status()).toBe(200);
+
+ 
+  expect(Array.isArray(responseBody)).toBeTruthy();
+
+ 
+  expect(responseBody.length).toBeGreaterThan(0);
+
+ 
+  expect(responseBody[0]).toHaveProperty('id');
+  expect(responseBody[0]).toHaveProperty('accountId');
+  expect(responseBody[0]).toHaveProperty('type');
+  expect(responseBody[0]).toHaveProperty('amount');
+  expect(responseBody[0]).toHaveProperty('date');
 });
 
 });
