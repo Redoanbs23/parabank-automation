@@ -16,5 +16,34 @@ test.describe('Registration Functionality', () => {
      await page.waitForTimeout(5000);
     await expect(page).toHaveURL('https://parabank.parasoft.com/parabank/register.htm');
   });
+  //Verify  required-field error is shown when Username is left empty
+
+  test('Verify that a required-field error is shown when Username is left empty', async ({page}) => {
+    const registrationPage = new RegistrationPage(page);
+    await registrationPage.goto();
+
+    const uniqueId = Date.now();
+
+  const password = `Pass${uniqueId}`;
+
+    await page.waitForTimeout(2000);
+    await registrationPage.registration('Bushra', 'Roja','dhaka','Dhaka','Dhaka','123','01234567','2233','',password,password);
+     await page.waitForTimeout(5000);
+    await expect(page).toHaveURL('https://parabank.parasoft.com/parabank/register.htm');
+  });
+//Verify that a required-field error is shown when Password is left empty
+ test('Verify that a required-field error is shown when Password is left empty', async ({page}) => {
+    const registrationPage = new RegistrationPage(page);
+    await registrationPage.goto();
+
+    const uniqueId = Date.now();
+  
+  const username = `Pass${uniqueId}`;
+
+    await page.waitForTimeout(2000);
+    await registrationPage.registration('Bushra', 'Roja','dhaka','Dhaka','Dhaka','123','01234567','2233',username,'','');
+     await page.waitForTimeout(5000);
+    await expect(page).toHaveURL('https://parabank.parasoft.com/parabank/register.htm');
+  });
 
 });
