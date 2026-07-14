@@ -155,4 +155,34 @@ expect(response.status()).toBe(400);
   
 });
 
+
+test.only('Verify that GET account with a negative ID is handled gracefully', async ({ request }) => {
+
+  const negativeAccountId = -100000;
+
+  const response = await request.get(
+    `${base_url}/accounts/${negativeAccountId}`,
+    {
+      headers: {
+        'Accept': 'application/json'
+      }
+    }
+  );
+
+  console.log('Status Code:', response.status());
+
+  const rawBody = await response.text();
+  console.log('Raw Response Body:', rawBody);
+
+  try {
+    const parsedBody = JSON.parse(rawBody);
+    console.log('Parsed Response Body:', parsedBody);
+  } catch (e) {
+    console.log('Response is not valid JSON (likely XML, HTML, or empty)');
+  }
+
+  
+  expect(response.status()).toBe(400);
+});
+
 });
