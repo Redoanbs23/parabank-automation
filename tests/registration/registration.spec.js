@@ -64,7 +64,7 @@ test.describe('Registration Functionality', () => {
 
 
   //Verify that a 'username already exists' error is shown when registering with a duplicate username
- test.only('Verify that a username already exists error is shown when registering with a duplicate username', async ({page}) => {
+ test('Verify that a username already exists error is shown when registering with a duplicate username', async ({page}) => {
     const registrationPage = new RegistrationPage(page);
     await registrationPage.goto();
 
