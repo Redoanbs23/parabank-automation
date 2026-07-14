@@ -11,6 +11,7 @@ export class OpenAccountsPage {
     });
     this.openAccountPageHeading = this.page.locator("#openAccountResult h1");
     this.newAccountID = this.page.locator("#newAccountId");
+    this.errorMessage = this.page.locator(".error");
   }
 
   async clickOpenAccountLink() {
@@ -21,5 +22,16 @@ export class OpenAccountsPage {
     await this.accountTypeDropdown.selectOption(accountType);
     await this.fundingAccountDropdown.selectOption({ index: fundingAccount });
     await this.openNewAccountButton.click();
+  }
+
+  async getNewAccountId() {
+    await this.page.waitForFunction(
+      () => document.querySelector("#newAccountId")?.textContent?.trim() !== "",
+    );
+    return await this.newAccountID.textContent();
+  }
+
+  async clickNewAccountLink() {
+    await this.newAccountID.click();
   }
 }
