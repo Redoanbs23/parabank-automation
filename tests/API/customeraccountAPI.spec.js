@@ -186,9 +186,9 @@ test('Verify that GET account with a negative ID is handled gracefully', async (
 });
 
 
-test.only('Verify that GET /accounts/{id}/transactions returns 200 with a valid transaction array for an account with history', async ({ request }) => {
+test('Verify that GET /accounts/{id}/transactions returns 200 with a valid transaction array for an account with history', async ({ request }) => {
 
-  const accountId = 13344; 
+  const accountId = 12345; 
 
   const response = await request.get(
     `${base_url}/accounts/${accountId}/transactions`,
@@ -218,6 +218,34 @@ test.only('Verify that GET /accounts/{id}/transactions returns 200 with a valid 
   expect(responseBody[0]).toHaveProperty('type');
   expect(responseBody[0]).toHaveProperty('amount');
   expect(responseBody[0]).toHaveProperty('date');
+});
+
+test('Verify the actual response when GET transactions is called on an account with zero history', async ({ request }) => {
+
+  const accountIdWithNoTransactions = 15009; 
+
+  const response = await request.get(
+    `${base_url}/accounts/${accountIdWithNoTransactions}/transactions`,
+    {
+      headers: {
+        'Accept': 'application/json'
+      }
+    }
+  );
+
+  console.log('Status Code:', response.status());
+
+  const rawBody = await response.text();
+  console.log('Raw Response Body:', rawBody);
+
+  try {
+    const parsedBody = JSON.parse(rawBody);
+    console.log('Parsed Response Body:', parsedBody);
+  } catch (e) {
+    console.log('Response is not valid JSON');
+  }
+
+  expect(response.status()).toBe(400);
 });
 
 });
