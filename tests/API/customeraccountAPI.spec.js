@@ -248,4 +248,21 @@ test('Verify the actual response when GET transactions is called on an account w
   expect(response.status()).toBe(400);
 });
 
+
+
+test('Verify that response Content-Type header is application/json', async ({ request }) => {
+    const accountId = 12345;
+  const response = await request.get(
+    `${base_url}/accounts/${accountId}/transactions`
+  );
+
+  expect(response.status()).toBe(200);
+
+  const contentType = response.headers()['content-type'];
+
+  console.log('Content-Type:', contentType);
+
+  expect(contentType).toContain('application/json');
+});
+
 });
