@@ -1,10 +1,9 @@
+const { expect } = require('@playwright/test');
+
 class RegistrationPage {
 
     constructor(page) {
-
         this.page = page;
-
-        this.registerLink = page.locator('text=Register');
 
         this.firstName = page.locator('input[name="customer.firstName"]');
         this.lastName = page.locator('input[name="customer.lastName"]');
@@ -17,37 +16,62 @@ class RegistrationPage {
 
         this.username = page.locator('input[name="customer.username"]');
         this.password = page.locator('input[name="customer.password"]');
-        this.confirmPassword = page.locator('#repeatedPassword');
+        this.confirmPassword = page.locator('input[name="repeatedPassword"]');
 
         this.registerButton = page.locator('input[value="Register"]');
+        this.resetButton = page.locator('input[value="Reset"]');
     }
 
-    async navigate() {
-        await this.page.goto('https://parabank.parasoft.com/parabank/index.htm');
+
+    async open() {
+        await this.page.goto('https://parabank.parasoft.com/parabank/register.htm');
     }
 
-    async openRegistration() {
-        await this.registerLink.click();
-    }
 
-    async register(user) {
+    async register(data) {
 
-        await this.firstName.fill(user.firstName);
-        await this.lastName.fill(user.lastName);
-        await this.address.fill(user.address);
-        await this.city.fill(user.city);
-        await this.state.fill(user.state);
-        await this.zipCode.fill(user.zipCode);
-        await this.phone.fill(user.phone);
-        await this.ssn.fill(user.ssn);
+        if(data.firstName)
+            await this.firstName.fill(data.firstName);
 
-        await this.username.fill(user.username);
-        await this.password.fill(user.password);
-        await this.confirmPassword.fill(user.password);
+        if(data.lastName)
+            await this.lastName.fill(data.lastName);
+
+        if(data.address)
+            await this.address.fill(data.address);
+
+        if(data.city)
+            await this.city.fill(data.city);
+
+        if(data.state)
+            await this.state.fill(data.state);
+
+        if(data.zipCode)
+            await this.zipCode.fill(data.zipCode);
+
+        if(data.phone)
+            await this.phone.fill(data.phone);
+
+        if(data.ssn)
+            await this.ssn.fill(data.ssn);
+
+        if(data.username)
+            await this.username.fill(data.username);
+
+        if(data.password)
+            await this.password.fill(data.password);
+
+        if(data.confirmPassword)
+            await this.confirmPassword.fill(data.confirmPassword);
+
 
         await this.registerButton.click();
     }
 
+
+    async resetForm(){
+        await this.resetButton.click();
+    }
+
 }
 
-module.exports = RegistrationPage;
+module.exports = { RegistrationPage };
