@@ -31,7 +31,7 @@ test.describe('Registration Functionality', () => {
      await page.waitForTimeout(5000);
     await expect(page).toHaveURL('https://parabank.parasoft.com/parabank/register.htm');
   });
-//Verify that a required-field error is shown when Password is left empty
+//Verify required-field error is shown when Password is left empty
  test('Verify that a required-field error is shown when Password is left empty', async ({page}) => {
     const registrationPage = new RegistrationPage(page);
     await registrationPage.goto();
