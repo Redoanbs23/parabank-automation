@@ -159,5 +159,22 @@ test('Verify whether login is case-sensitive for the username', async ({ page })
   await expect(page.getByRole('heading', { name: 'Accounts Overview' })).not.toBeVisible();
 
 }); 
+//Verify whether leading/trailing spaces in password are trimmed
+test('Verify whether leading/trailing spaces in password are trimmed', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+
+  console.log('Username used:',username);
+  console.log('Invalid password used:',' test123');
+
+  await loginPage.login(username,' test123');
+
+  await expect(loginPage.errorMessage).toBeVisible();
+  const errorText = await loginPage.errorMessage.textContent();
+  console.log('ACTUAL ERROR MESSAGE:', errorText);
+
+  await expect(page.getByRole('heading', { name: 'Accounts Overview' })).not.toBeVisible();
+
+});
 
 }); 
