@@ -91,7 +91,7 @@ test('Verify that GET account details returns 200 OK with the correct account ob
     expect(typeof body.balance).toBe('number');
   });
 
-});
+
 
 
 test('Verify the actual response when GET accounts is called with a non-existent customerId', async ({ request }) => {
@@ -124,3 +124,35 @@ expect(response.status()).toBe(400);
 });
 
 
+
+
+test('Verify the actual response when GET account is called with a non-existent accountId', async ({ request }) => {
+
+  
+  const nonExistentaccountId = 111111111;
+
+  const response = await request.get(`${base_url}/customers/${nonExistentaccountId}/accounts`, {
+    headers: { 'Accept': 'application/json' }
+  });
+
+  console.log('Status Code:', response.status());
+
+ 
+  const rawBody = await response.text();
+  console.log('Raw Response Body:', rawBody);
+
+  
+  try {
+    const parsedBody = JSON.parse(rawBody);
+    console.log('Parsed Response Body:', parsedBody);
+  } catch (e) {
+    console.log('Response is not valid JSON (likely XML, HTML, or empty)');
+  }
+
+  
+expect(response.status()).toBe(400);
+
+  
+});
+
+});
