@@ -265,4 +265,42 @@ test('Verify that response Content-Type header is application/json', async ({ re
   expect(contentType).toContain('application/json');
 });
 
+
+test('Verify that response body fields match the expected schema', async ({ request }) => {
+
+  const accountId = 12345;
+
+  const response = await request.get(
+    `${base_url}/accounts/${accountId}/transactions`,
+    {
+      headers: {
+        Accept: 'application/json'
+      }
+    }
+  );
+
+  expect(response.status()).toBe(200);
+
+  const transactions = await response.json();
+
+  expect(Array.isArray(transactions)).toBe(true);
+
+  transactions.forEach(transaction => {
+    expect(transaction).toHaveProperty('id');
+    expect(transaction).toHaveProperty('accountId');
+    expect(transaction).toHaveProperty('type');
+    expect(transaction).toHaveProperty('date');
+    expect(transaction).toHaveProperty('amount');
+    expect(transaction).toHaveProperty('description');
+
+    expect(typeof transaction.id).toBe('number');
+    expect(typeof transaction.accountId).toBe('number');
+    expect(typeof transaction.type).toBe('string');
+    expect(typeof transaction.date).toBe('number');
+    expect(typeof transaction.amount).toBe('number');
+    expect(typeof transaction.description).toBe('string');
+  });
+
+});
+
 });
