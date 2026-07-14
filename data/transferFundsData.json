@@ -1,8 +1,0 @@
-{
-  "validTransfer": {
-    "amount": "100"
-  },
-  "zeroAmount": {
-    "amount": "0"
-  }
-}
