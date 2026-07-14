@@ -1,0 +1,11 @@
+{
+  "validContact": {
+    "firstName": "Mijanur",
+    "lastName": "Rahman",
+    "address": "House 12, Road 5",
+    "city": "Dhaka",
+    "state": "Dhaka",
+    "zipCode": "1212",
+    "phone": "01712345678"
+  }
+}
