@@ -47,7 +47,7 @@ test.describe('Registration Functionality', () => {
   });
 
 //Verify that a 'Passwords do not match' error is shown when Confirm Password differs from Password
- test.only('Verify that a Passwords do not match error is shown when Confirm Password differs from Password', async ({page}) => {
+ test('Verify that a Passwords do not match error is shown when Confirm Password differs from Password', async ({page}) => {
     const registrationPage = new RegistrationPage(page);
     await registrationPage.goto();
 
@@ -61,5 +61,23 @@ test.describe('Registration Functionality', () => {
      await page.waitForTimeout(5000);
     await expect(page).toHaveURL('https://parabank.parasoft.com/parabank/register.htm');
   });
+
+
+  //Verify that a 'username already exists' error is shown when registering with a duplicate username
+ test.only('Verify that a username already exists error is shown when registering with a duplicate username', async ({page}) => {
+    const registrationPage = new RegistrationPage(page);
+    await registrationPage.goto();
+
+    const uniqueId = Date.now();
+  
+  const username = `Pass${uniqueId}`;
+  const password = `Pass${uniqueId}`;
+
+    await page.waitForTimeout(2000);
+    await registrationPage.registration('Bushra', 'Roja','dhaka','Dhaka','Dhaka','123','01234567','2233','Tomal',password,password);
+     await page.waitForTimeout(5000);
+    await expect(page).toHaveURL('https://parabank.parasoft.com/parabank/register.htm');
+  });
+
 
 });
