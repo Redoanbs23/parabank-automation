@@ -1,0 +1,20 @@
+const {test, expect} = require('@playwright/test');
+const {RegistrationPage} = require('../../pages/registration/registrationpage');
+
+test.describe('Registration Functionality', () => {
+
+  test('Registration with Valid Credentials', async ({page}) => {
+    const registrationPage = new RegistrationPage(page);
+    await registrationPage.goto();
+
+    const uniqueId = Date.now();
+  const username = `user${uniqueId}`;
+  const password = `Pass${uniqueId}`;
+
+    await page.waitForTimeout(2000);
+    await registrationPage.registration('Bushra', 'Roja','dhaka','Dhaka','Dhaka','123','01234567','2233',username,password,password);
+     await page.waitForTimeout(5000);
+    await expect(page).toHaveURL('https://parabank.parasoft.com/parabank/register.htm');
+  });
+
+});
