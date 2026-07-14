@@ -94,16 +94,12 @@ test.describe("Open New Account", () => {
     await openAccountsPage.accountTypeDropdown.selectOption("0");
     await openAccountsPage.fundingAccountDropdown.selectOption({ index: 0 });
 
-    // BUG: rapid double-click creates 2 accounts with unique IDs instead of 1
-    // Expected: only 1 account should be created regardless of click speed
-    // Actual: n rapid clicks = n accounts created
     await openAccountsPage.openNewAccountButton.dblclick();
 
     const newId = await openAccountsPage.getNewAccountId();
     await overviewPage.clickAccountsOverviewLink();
     const accountIds = await overviewPage.getAccountIds();
 
-    // asserting actual behavior — both accounts appear in overview besides the default user account
     expect(accountIds.length).toBeGreaterThan(2);
   });
 
@@ -136,14 +132,12 @@ test.describe("Open New Account", () => {
   test("TC0154 - Opening a second CHECKING account succeeds", async ({
     page,
   }) => {
-    // open first CHECKING
     await openAccountsPage.clickOpenAccountLink();
     await openAccountsPage.openNewAccount("0", 0);
     await expect(openAccountsPage.openAccountPageHeading).toHaveText(
       "Account Opened!",
     );
 
-    // open second CHECKING using newly created account as funding source
     await openAccountsPage.clickOpenAccountLink();
     await openAccountsPage.openNewAccount("0", 0);
     await expect(openAccountsPage.openAccountPageHeading).toHaveText(

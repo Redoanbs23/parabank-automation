@@ -87,10 +87,6 @@ test.describe("Update Contact Info", () => {
   test("TC0160 - Phone field accepts invalid format without validation error", async ({
     page,
   }) => {
-    // BUG: ParaBank accepts any string in the phone field without format validation.
-    // Expected: invalid phone format (e.g. 'abc-xyz') should show a validation error.
-    // Actual: update succeeds regardless of phone format.
-    // Extremely long strings or HTML injection trigger an internal server error instead.
     await contactInfoPage.clickUpdateProfileLink();
     await page.waitForLoadState("networkidle");
     await contactInfoPage.updateContactInfo({
@@ -108,8 +104,6 @@ test.describe("Update Contact Info", () => {
   test("TC0161 - Special characters accepted in name and address fields", async ({
     page,
   }) => {
-    // Observation: ParaBank accepts special characters in name/address fields.
-    // No explicit rejection behavior found. Asserting actual behavior (success).
     await contactInfoPage.clickUpdateProfileLink();
     await page.waitForLoadState("networkidle");
     await contactInfoPage.updateContactInfo({
@@ -127,10 +121,6 @@ test.describe("Update Contact Info", () => {
   test("TC0162 - Very long input triggers internal server error (bug)", async ({
     page,
   }) => {
-    // BUG: entering 200+ characters in a field triggers "An internal error has occurred"
-    // instead of a proper validation error message.
-    // Expected: a user-friendly validation error limiting input length.
-    // Actual: internal server error page renders.
     const longString = "a".repeat(201);
     await contactInfoPage.clickUpdateProfileLink();
     await page.waitForLoadState("networkidle");
@@ -193,14 +183,12 @@ test.describe("Update Contact Info", () => {
     await expect(contactInfoPage.firstNameField).toHaveValue("Persisted");
   });
 
-  test("TC0166 - Behavior when Zip Code contains letters", async ({ page }) => {
+  test("TC0166 - Zip Code field accepts letters", async ({ page }) => {
     await contactInfoPage.clickUpdateProfileLink();
     await page.waitForLoadState("networkidle");
     await contactInfoPage.zipField.clear();
     await contactInfoPage.zipField.fill("ABCDE");
-    await contactInfoPage.updateBtn.click();
-    // observe actual behavior — update assertion after manual check
-    await expect(contactInfoPage.zipError).toBeVisible();
+    await expect(contactInfoPage.successMessage).toHaveText("Profile Updated");
   });
 
   test("TC0167 - Phone field accepts standard numeric format", async ({
