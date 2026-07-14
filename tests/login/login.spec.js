@@ -109,4 +109,22 @@ test('Verify that a username is empty', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Accounts Overview' })).not.toBeVisible();
 });
 
+//Verify that an error is shown when password is left empty
+test('Verify that a password is empty', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+
+  console.log('Username used:',username);
+  console.log('Invalid password used:','');
+
+  await loginPage.login(username,'');
+
+  await expect(loginPage.errorMessage).toBeVisible();
+  const errorText = await loginPage.errorMessage.textContent();
+  console.log('ACTUAL ERROR MESSAGE:', errorText);
+
+  await expect(page.getByRole('heading', { name: 'Accounts Overview' })).not.toBeVisible();
+});
+
+
 }); 
