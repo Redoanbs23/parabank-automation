@@ -5,7 +5,7 @@ import { OpenAccountsPage } from "../../pages/accountServices/openAccountsPage";
 import { ContactInfoPage } from "../../pages/accountServices/contactInfoPage";
 
 test.describe("Update Contact Info", () => {
-  let username, password, contactInfoPage;
+  let username, password, loginPage, contactInfoPage;
 
   test.beforeAll(async ({ browser }) => {
     const page = await browser.newPage();
@@ -34,15 +34,18 @@ test.describe("Update Contact Info", () => {
   });
 
   test.beforeEach(async ({ page }) => {
-    const loginPage = new LoginPage(page);
+    loginPage = new LoginPage(page);
     contactInfoPage = new ContactInfoPage(page);
     await loginPage.goto();
     await loginPage.login(username, password);
+    await page.waitForSelector("text=Account Services");
   });
+
   test("TC0157 - Update all contact fields with valid data", async ({
     page,
   }) => {
     await contactInfoPage.clickUpdateProfileLink();
+    await expect(contactInfoPage.firstNameField).not.toHaveValue("");
     await contactInfoPage.updateContactInfo({
       firstName: "nobody",
       lastName: "1234",
@@ -52,6 +55,186 @@ test.describe("Update Contact Info", () => {
       zip: "1415",
       phone: "01200000000",
     });
+    await expect(contactInfoPage.successMessage).toHaveText("Profile Updated");
+  });
+
+  test("TC0158 - Required field error when First Name is cleared", async ({
+    page,
+  }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.firstNameField.clear();
+    await contactInfoPage.updateBtn.click();
+    await expect(contactInfoPage.firstNameError).toBeVisible();
+    await expect(contactInfoPage.firstNameError).toHaveText(
+      "First name is required.",
+    );
+  });
+
+  test("TC0159 - Required field error when Address is cleared", async ({
+    page,
+  }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.addressField.clear();
+    await contactInfoPage.updateBtn.click();
+    await expect(contactInfoPage.addressError).toBeVisible();
+    await expect(contactInfoPage.addressError).toHaveText(
+      "Address is required.",
+    );
+  });
+
+  test("TC0160 - Phone field accepts invalid format without validation error", async ({
+    page,
+  }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.updateContactInfo({
+      firstName: "John",
+      lastName: "Doe",
+      address: "123 Main St",
+      city: "Dhaka",
+      state: "DH",
+      zip: "1200",
+      phone: "abc-xyz",
+    });
+    await expect(contactInfoPage.successMessage).toHaveText("Profile Updated");
+  });
+
+  test("TC0161 - Special characters accepted in name and address fields", async ({
+    page,
+  }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.updateContactInfo({
+      firstName: "O'Brien",
+      lastName: "Smith-Jones",
+      address: "123 & Main St",
+      city: "Test City",
+      state: "TC",
+      zip: "12345",
+      phone: "01200000000",
+    });
+    await expect(contactInfoPage.successMessage).toHaveText("Profile Updated");
+  });
+
+  test("TC0162 - Very long input triggers internal server error (bug)", async ({
+    page,
+  }) => {
+    const longString = "a".repeat(201);
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.firstNameField.clear();
+    await contactInfoPage.firstNameField.fill(longString);
+    await contactInfoPage.updateBtn.click();
+    await expect(page.locator("#updateProfileError h1")).toHaveText("Error!");
+    await expect(page.locator("#updateProfileError .error")).toHaveText(
+      "An internal error has occurred and has been logged.",
+    );
+  });
+
+  test("TC0163 - Submitting unchanged values shows success confirmation", async ({
+    page,
+  }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.updateBtn.click();
+    await expect(contactInfoPage.successMessage).toHaveText("Profile Updated");
+  });
+
+  test("TC0164 - Unicode characters save and render correctly", async ({
+    page,
+  }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.updateContactInfo({
+      firstName: "Thomas",
+      lastName: "Müller",
+      address: "456 Ångström Ave",
+      city: "München",
+      state: "BY",
+      zip: "80331",
+      phone: "01200000000",
+    });
+    await expect(contactInfoPage.successMessage).toHaveText("Profile Updated");
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await expect(contactInfoPage.lastNameField).toHaveValue("Müller");
+  });
+
+  test("TC0165 - Updated values persist after page reload", async ({
+    page,
+  }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.updateContactInfo({
+      firstName: "Persisted",
+      lastName: "User",
+      address: "789 Persist Lane",
+      city: "Testville",
+      state: "TS",
+      zip: "99999",
+      phone: "01900000000",
+    });
+    await expect(contactInfoPage.successMessage).toHaveText("Profile Updated");
+    await page.reload();
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await expect(contactInfoPage.firstNameField).toHaveValue("Persisted");
+  });
+
+  test("TC0166 - Zip Code field accepts letters", async ({ page }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.zipField.clear();
+    await contactInfoPage.zipField.fill("ABCDE");
+    await expect(contactInfoPage.successMessage).toHaveText("Profile Updated");
+  });
+
+  test("TC0167 - Phone field accepts standard numeric format", async ({
+    page,
+  }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.updateContactInfo({
+      firstName: "John",
+      lastName: "Doe",
+      address: "123 Main St",
+      city: "Dhaka",
+      state: "DH",
+      zip: "1200",
+      phone: "01700000000",
+    });
+    await expect(contactInfoPage.successMessage).toHaveText("Profile Updated");
+  });
+
+  test("TC0168a - Required field error when State is empty", async ({
+    page,
+  }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.stateField.clear();
+    await contactInfoPage.updateBtn.click();
+    await expect(contactInfoPage.stateError).toBeVisible();
+    await expect(contactInfoPage.stateError).toHaveText("State is required.");
+  });
+
+  test("TC0168b - Required field error when Zip is empty", async ({ page }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.zipField.clear();
+    await contactInfoPage.updateBtn.click();
+    await expect(contactInfoPage.zipError).toBeVisible();
+    await expect(contactInfoPage.zipError).toHaveText("Zip Code is required.");
+  });
+
+  test("TC0168c - Phone is not a required field, update succeeds when empty", async ({
+    page,
+  }) => {
+    await contactInfoPage.clickUpdateProfileLink();
+    await page.waitForLoadState("networkidle");
+    await contactInfoPage.phoneField.clear();
+    await contactInfoPage.updateBtn.click();
     await expect(contactInfoPage.successMessage).toHaveText("Profile Updated");
   });
 });
