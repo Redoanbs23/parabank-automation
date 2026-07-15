@@ -1,6 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const { RegistrationPage } = require('../pages/registration/registrationpage');
 const { LoginPage } = require('../pages/login/loginpage');
+const FindTransactionPage = require('../pages/FindTransactionPage');
 
 test.describe('Find Transactions Test Cases', () => {
 
@@ -49,45 +50,29 @@ test.describe('Find Transactions Test Cases', () => {
 
     });
 
-    // ======================================================
-    // TC0030 - Verify Find Transactions with valid transaction ID
-    // ======================================================
+    // TC0030
+    test('TC0030 - Verify Find Transaction by Transaction ID', async ({ page }) => {
 
-    test('TC0030 - Verify Find Transactions with valid transaction ID', async ({ page }) => {
+        const findTransactionPage = new FindTransactionPage(page);
 
-        await page.getByRole('link', { name: 'Find Transactions' }).click();
+        await findTransactionPage.openFindTransaction();
 
-        await page.getByLabel('Transaction ID:').fill('12345');
+        await findTransactionPage.searchByTransactionId('12345');
 
-        await page.getByRole('button', {
-            name: 'Find Transactions'
-        }).click();
-
-        await expect(page.locator('h1'))
-            .toContainText('Transaction Results');
+        await expect(findTransactionPage.resultTable).toBeVisible();
 
     });
 
-    // ======================================================
-    // TC0031 - Verify Find Transactions with date filter
-    // ======================================================
+    // TC0031
+    test('TC0031 - Verify Find Transaction by Date', async ({ page }) => {
 
-    test('TC0031 - Verify Find Transactions with date filter', async ({ page }) => {
+        const findTransactionPage = new FindTransactionPage(page);
 
-        await page.getByRole('link', { name: 'Find Transactions' }).click();
+        await findTransactionPage.openFindTransaction();
 
-        await page.getByLabel('From Date:')
-            .fill('01-01-2026');
+        await findTransactionPage.searchByDate('07-15-2026');
 
-        await page.getByLabel('To Date:')
-            .fill('31-12-2026');
-
-        await page.getByRole('button', {
-            name: 'Find Transactions'
-        }).click();
-
-        await expect(page.locator('h1'))
-            .toContainText('Transaction Results');
+        await expect(findTransactionPage.resultTable).toBeVisible();
 
     });
 

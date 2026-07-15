@@ -4,16 +4,27 @@ class FindTransactionPage {
 
         this.page = page;
 
-        // Left menu
-        this.findTransactionLink = page.locator('text=Find Transactions');
+        // Left Menu
+        this.findTransactionLink = page.getByRole('link', { name: 'Find Transactions' });
 
-        // Amount textbox
+        // Transaction ID
+        this.transactionIdTextbox = page.locator('#transactionId');
+        this.findByTransactionIdButton = page.locator('#findById');
+
+        // Date
+        this.dateTextbox = page.locator('#transactionDate');
+        this.findByDateButton = page.locator('#findByDate');
+
+        // Date Range
+        this.fromDateTextbox = page.locator('#fromDate');
+        this.toDateTextbox = page.locator('#toDate');
+        this.findByDateRangeButton = page.locator('#findByDateRange');
+
+        // Amount
         this.amountTextbox = page.locator('#amount');
+        this.findByAmountButton = page.locator('#findByAmount');
 
-        // Amount search button
-        this.findTransactionButton = page.locator('#findByAmount');
-
-        // Result table
+        // Result
         this.resultTable = page.locator('#transactionTable');
     }
 
@@ -21,9 +32,25 @@ class FindTransactionPage {
         await this.findTransactionLink.click();
     }
 
+    async searchByTransactionId(id) {
+        await this.transactionIdTextbox.fill(id);
+        await this.findByTransactionIdButton.click();
+    }
+
+    async searchByDate(date) {
+        await this.dateTextbox.fill(date);
+        await this.findByDateButton.click();
+    }
+
+    async searchByDateRange(fromDate, toDate) {
+        await this.fromDateTextbox.fill(fromDate);
+        await this.toDateTextbox.fill(toDate);
+        await this.findByDateRangeButton.click();
+    }
+
     async searchByAmount(amount) {
         await this.amountTextbox.fill(amount);
-        await this.findTransactionButton.click();
+        await this.findByAmountButton.click();
     }
 
 }

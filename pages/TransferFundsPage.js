@@ -7,18 +7,16 @@ class TransferFundsPage {
         // Menu
         this.transferFundsLink = page.getByRole('link', { name: 'Transfer Funds' });
 
-        // Fields
-        this.amount = page.locator('#amount');
+        // Form
+        this.amountInput = page.locator('#amount');
         this.fromAccount = page.locator('#fromAccountId');
         this.toAccount = page.locator('#toAccountId');
 
         // Button
-        this.transferButton = page.getByRole('button', { name: 'Transfer' });
+        this.transferButton = page.locator('input[value="Transfer"]');
 
-        // Success Message
+        // Result
         this.successMessage = page.locator('#showResult h1');
-
-        // Error Message (validation)
         this.errorMessage = page.locator('.error');
     }
 
@@ -28,14 +26,17 @@ class TransferFundsPage {
 
     async transfer(amount) {
 
-        await this.fromAccount.selectOption({ index: 0 });
+        await this.amountInput.fill(amount);
 
-        await this.toAccount.selectOption({ index: 1 });
+        // Select different accounts only if possible
+        const count = await this.toAccount.locator('option').count();
 
-        await this.amount.fill(amount);
+        if (count > 1) {
+            await this.fromAccount.selectOption({ index: 0 });
+            await this.toAccount.selectOption({ index: 1 });
+        }
 
         await this.transferButton.click();
-
     }
 
 }
