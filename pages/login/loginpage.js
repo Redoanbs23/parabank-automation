@@ -20,6 +20,7 @@ class LoginPage {
     await this.passwordInput.fill(password);
     await this.loginButton.click();
   }
+  // Temporary comment for testing push
 
   async logout() {
     await this.logoutLink.click();
